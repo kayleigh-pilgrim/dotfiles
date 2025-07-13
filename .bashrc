@@ -127,5 +127,5 @@ fi
 
 eval "$(zoxide init bash)"
 
-. ~/bin/dynmotd.sh
+. ~/bin/dynmotd.sh | lolcat
 
