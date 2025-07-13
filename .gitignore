@@ -1,0 +1,83 @@
+private.md
+
+.env*
+/.next/
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Icon?
+Desktop.ini
+
+# Editor & IDE settings
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# System files
+*.swp
+*.swo
+*.bak
+*.tmp
+*.log
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+package-lock.json
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+
+# PHP
+vendor/
+composer.lock
+
+# Laravel
+/.env
+Homestead.yaml
+Homestead.json
+/.vagrant/
+
+# Mac/Linux trash
+.Trashes
+*.~lock.*#
+
+# Windows
+$RECYCLE.BIN/
+
+# Docker
+*.pid
+
+# Logs
+*.log
+*.gz
+
+# Compiled files
+*.class
+*.o
+*.so
+*.dll
+*.exe
+*.out
+*.obj
+
+# Misc
+*.orig
+*.rej
+*.sublime-*
+
+# Local settings
+*.local
