@@ -125,5 +125,7 @@ if ! shopt -oq posix; then
 fi
 
 
+eval "$(zoxide init bash)"
+
 . ~/bin/dynmotd.sh
 
