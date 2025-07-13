@@ -1,0 +1,68 @@
+conky.config = {
+  use_xft = true,
+	update_interval = 1.5,
+	total_run_times = 0,
+	own_window = true,
+	own_window_type = 'desktop',
+	own_window_hints = 'undecorated,below,sticky,skip_taskbar,skip_pager',
+	own_window_colour = '100',
+	own_window_argb_visual = true,
+	own_window_argb_value = 200,
+	double_buffer = true,
+	draw_shades = false,
+	draw_outline = false,
+	draw_borders = false,
+	draw_graph_borders = false,
+	alignment = 'top_right',
+	gap_x = 20,
+	gap_y = 60,
+	border_inner_margin = 20,
+	no_buffers = true,
+	uppercase = false,
+	cpu_avg_samples = 2,
+	net_avg_samples = 1,
+	override_utf8_locale = false,
+	use_spacer = 'none',
+	minimum_width = 300,
+  minimum_height = 0,
+	default_bar_height = 16,
+	default_bar_width = 140,
+	xinerama_head = 1,
+	font = 'Monospace:pixelsize=18'
+}
+
+-- ${nvidia gputemp}$
+conky.text = [[
+${color 00FF00}${font monospace:pixelsize=20}${execpi 1 date -R}
+${voffset 20}${color FF0000}${desktop_name}
+${voffset 20}${color FFFF00}${font monospace:pixelsize=20}SYSTEM${font}
+${voffset 6}${color FF0000}Host ${color 00FF00}${execpi 3600 hostname -f} ${color FF0000}${alignr}Up ${color 00FF00}${uptime}
+${voffset 2}${color FF0000}Load ${color 00FF00}${execpi 1 /bin/cat /proc/loadavg | awk {'print $1" - "$2" - "$3'}}
+${voffset 2}${color FF0000}CPU  ${color 00FF00}${cpu cpu0}${color FF0000}% ${color 00FF00}${freq}${color FF0000}MHz  ${color 00FF00}${alignr}${cpubar cpu0}
+${voffset 2}${color FF0000}RAM  ${color 00FF00}${memeasyfree}${color FF0000} free${color 00FF00}${alignr}${membar}
+${voffset 2}${color FF0000}Battery ${color 00FF00}${battery_percent BAT1}${color FF0000}%${color 00FF00}${alignr}${battery_bar BAT1}
+${voffset 2}${color FF0000}CPU temp ${color 00FF00}${acpitemp}${color FF0000} C
+${voffset 20}${color FFFF00}${font monospace:pixelsize=20}NETWORK${font}
+${voffset 6}${color FF0000}WiFi     ${color 00FF00}${wireless_essid wlan0} ${alignr}${color 00FF00}${wireless_link_bar wlan0}
+${voffset 2}${color FF0000}Int IPv4 ${color 00FF00}${execpi 3600 /sbin/ifconfig | grep 'inet ' | grep -v '127.' | awk -F' ' '{print $2}' | xargs echo -n}
+${voffset 2}${color FF0000}Def. GW  ${color 00FF00}${gw_ip}
+${voffset 2}${color FF0000}Ext IPv4 ${color 00FF00}${execpi 3600 curl https://v4.ident.me --silent | xargs echo -n}
+${voffset 2}${color FF0000}Ext IPv6
+${voffset 2}${color 00FF00}${execpi 3600 curl https://v6.ident.me --silent | xargs echo -n}
+${voffset 20}${color FFFF00}${font monospace:pixelsize=20}DISKS${font}
+${voffset 6}${color FF0000}/    ${color 00FF00}${fs_used /} ${color FF0000}/ ${color 00FF00}${fs_size /}${alignr}${fs_bar /}
+${voffset 2}${color FF0000}BKP1 ${color 00FF00}${fs_used /run/media/kayleigh/backup1} ${color FF0000}/ ${color 00FF00}${fs_size /run/media/kayleigh/backup1}${alignr}${fs_bar /run/media/kayleigh/backup1}
+${voffset 2}${color FF0000}BKP2 ${color 00FF00}${fs_used /run/media/kayleigh/backup2} ${color FF0000}/ ${color 00FF00}${fs_size /run/media/kayleigh/backup2}${alignr}${fs_bar /run/media/kayleigh/backup2}
+${voffset 20}${color FFFF00}${font monospace:pixelsize=20}INFRASTRUCTURE${font}
+${voffset 6}${color FF0000}W1 ${execpi 5 curl https://kayleighpilgrim.net --silent > /dev/null && echo '${color 00FF00}ONLINE' || echo '${color FF0000}OFFLINE'}${alignr}${color FF0000}M1 ${execpi 5 curl https://m1.abs.gd --silent > /dev/null && echo '${color 00FF00}ONLINE' || echo '${color FF0000}OFFLINE'}
+${voffset 20}${color FFFF00}${font monospace:pixelsize=20}NOTIFICATIONS${font}
+${voffset 6}${color FF0000}Email ${color 00FF00}${execpi 60 php check-mail.php | xargs echo -n}
+${voffset 20}${color FFFF00}${font monospace:pixelsize=20}WEATHER${font}
+${voffset 6}${color FF0000}Condition  ${color 00FF00}${execpi 300 /bin/bash weather.sh --condition}
+${voffset 2}${color FF0000}Temperature ${color 00FF00}${execpi 300 /bin/bash weather.sh --temperature} C
+${voffset 2}${color FF0000}Rain       ${color 00FF00}${execpi 300 /bin/bash weather.sh --rain}
+${voffset 2}${color FF0000}Humidity   ${color 00FF00}${execpi 300 /bin/bash weather.sh --humidity}
+${voffset 2}${color FF0000}Wind        ${color 00FF00}${execpi 300 /bin/bash weather.sh --wind}
+${voffset 2}${color FF0000}Pressure   ${color 00FF00}${execpi 300 /bin/bash weather.sh --pressure}
+${voffset 2}${color FF0000}UV Index   ${color 00FF00}${execpi 300 /bin/bash weather.sh --uvindex}
+]];
