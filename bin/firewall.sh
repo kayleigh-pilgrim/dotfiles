@@ -13,9 +13,6 @@
 #    chmod +x /etc/rc.d/rc.firewall
 #Linux will then automatically run this script with the "start" parameter.
 
-# ABOUT LOGGING:
-# turning off log untill we have centralized logging and honeypot firewall listening to those logs
-
 
 ##########################################################################################
 # Stop Fail2ban                                                                          #
@@ -28,7 +25,7 @@ service fail2ban stop
 ##########################################################################################
 # Allowed ports
 declare -a TCP_ALLOWED=(80 443)
-declare -a UDP_ALLOWED=(443)
+declare -a UDP_ALLOWED=(80 443) # HTTP ports also in UDP for HTTP3
 # sysctl location
 # If set, it will use sysctl to adjust the kernel parameters.
 # If this is empty (or is unset), the use of sysctl is disabled.
@@ -66,7 +63,7 @@ LO_IP="127.0.0.1"
 if [ "$1" = "save" ]; then
   $IPTS > /etc/sysconfig/iptables
   service fail2ban start
-  #exit 0
+  #exit -1
 elif [ "$1" = "restore" ]; then
   $IPTR < /etc/sysconfig/iptables
   service fail2ban start
@@ -136,32 +133,32 @@ fi
 #if [ "$SYSCTL" = "" ]; then echo "1" > /proc/sys/net/ipv4/ip_dynaddr; else $SYSCTL net.ipv4.ip_dynaddr="1"; fi
 # This enables SYN flood protection.  The SYN cookies activation allows your system to
 # accept an unlimited number of TCP connections while still trying to give reasonable
-# service during a denial of service attack.    TODO:
+# service during a denial of service attack.
 if [ "$SYSCTL" = "" ]; then echo "1" > /proc/sys/net/ipv4/tcp_syncookies; else $SYSCTL net.ipv4.tcp_syncookies="1"; fi
 # This enables source validation by reversed path according to RFC1812.  In other words,
 # did the response packet originate from the same interface through which the source
 # packet was sent?  It's recommended for single-homed systems and routers on stub
 # networks.  Since those are the configurations this firewall is designed to support, I
 # turn it on by default.  Turn it off if you use multiple NICs connected to the same
-# network.    TODO:
-#if [ "$SYSCTL" = "" ]; then echo "1" > /proc/sys/net/ipv4/conf/all/rp_filter; else $SYSCTL net.ipv4.conf.all.rp_filter="1"; fi
+# network.
+if [ "$SYSCTL" = "" ]; then echo "1" > /proc/sys/net/ipv4/conf/all/rp_filter; else $SYSCTL net.ipv4.conf.all.rp_filter="1"; fi
 # This option allows a subnet to be firewalled with a single IP address.  It's used to
 # build a DMZ.  Since that's not a focus of this firewall script, it's not enabled by
 # default, but is included for reference.  See: http://www.sjdjweis.com/linux/proxyarp/
 #if [ "$SYSCTL" = "" ]; then echo "1" > /proc/sys/net/ipv4/conf/all/proxy_arp; else $SYSCTL net.ipv4.conf.all.proxy_arp="1"; fi
 # This kernel parameter instructs the kernel to ignore all ICMP echo requests sent to the
-# broadcast address.  This prevents a number of smurfs and similar DoS nasty attacks.    TODO:
+# broadcast address.  This prevents a number of smurfs and similar DoS nasty attacks.
 if [ "$SYSCTL" = "" ]; then echo "1" > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts; else $SYSCTL net.ipv4.icmp_echo_ignore_broadcasts="1"; fi
 # This option can be used to accept or refuse source routed packets.  It is usually on by
-# default, but is generally considered a security risk.  This option turns it off.    TODO:
+# default, but is generally considered a security risk.  This option turns it off.
 if [ "$SYSCTL" = "" ]; then echo "0" > /proc/sys/net/ipv4/conf/all/accept_source_route; else $SYSCTL net.ipv4.conf.all.accept_source_route="0"; fi
 # This option can disable ICMP redirects.  ICMP redirects are generally considered a
 # security risk and shouldn't be needed by most systems using this script.
-#if [ "$SYSCTL" = "" ]; then echo "0" > /proc/sys/net/ipv4/conf/all/accept_redirects; else $SYSCTL net.ipv4.conf.all.accept_redirects="0"; fi
+if [ "$SYSCTL" = "" ]; then echo "0" > /proc/sys/net/ipv4/conf/all/accept_redirects; else $SYSCTL net.ipv4.conf.all.accept_redirects="0"; fi
 # However, we'll ensure the secure_redirects option is on instead.  This option accepts
-# only from gateways in the default gateways list.    TODO:
+# only from gateways in the default gateways list.
 if [ "$SYSCTL" = "" ]; then echo "1" > /proc/sys/net/ipv4/conf/all/secure_redirects; else $SYSCTL net.ipv4.conf.all.secure_redirects="1"; fi
-# This option logs packets from impossible addresses.    TODO:
+# This option logs packets from impossible addresses.
 #if [ "$SYSCTL" = "" ]; then echo "1" > /proc/sys/net/ipv4/conf/all/log_martians; else $SYSCTL net.ipv4.conf.all.log_martians="1"; fi
 
 
@@ -286,7 +283,6 @@ $IPT -A bad_tcp_packets -p tcp --tcp-flags SYN,RST SYN,RST -j DROP
 $IPT -A bad_tcp_packets -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP
 # All good, so return to bad_packets chain
 $IPT -A bad_tcp_packets -p tcp -j RETURN
-
 
 ######################
 # icmp_packets chain #
