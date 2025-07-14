@@ -125,7 +125,25 @@ if ! shopt -oq posix; then
 fi
 
 
+#/home/bin
+if [ -d "$HOME/bin" ] ; then
+    PATH="$HOME/bin:$PATH"
+fi
+#zoxide
 eval "$(zoxide init bash)"
+#pipx
+export PATH="$PATH:/home/kayleigh/.local/bin"
+#composer
+export PATH="$HOME/.config/composer/vendor/bin:$PATH"
+# Jetbrains Toolbox
+export PATH="$PATH:/home/kayleigh/.local/share/JetBrains/Toolbox/scripts"
+# cargo
+#export PATH="$PATH:/home/kayleigh/.local/bin"
+#. "/home/kayleigh/.local/share/cargo/env"
+# opam
+#test -r /home/kayleigh/.opam/opam-init/init.sh && . /home/kayleigh/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true
 
-. ~/bin/dynmotd.sh | lolcat
+
+. ~/bin/dynmotd.sh
+
 
